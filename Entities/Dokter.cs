@@ -17,7 +17,7 @@ namespace Entities
         [DisplayName("Nama")]
         public string nama { get; set; }
         [DisplayName("Tanggal Lahir")]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime tanggal_lahir { get; set; }
         [DisplayName("Tempat Lahir")]
         public string tempat_lahir { get; set; }

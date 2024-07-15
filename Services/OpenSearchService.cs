@@ -32,5 +32,15 @@ namespace Services
         {
             await _openSearchRepository.IndexDocumentAsync(data);
         }
+
+        public async Task UpdateDocumentAsync(int id, Dokter data)
+        {
+            await _openSearchRepository.UpdateDocumentAsync(id, data);
+        }
+
+        public async Task DeleteDocumentAsync(int id)
+        {
+            await _openSearchRepository.DeleteDocumentAsync(id);
+        }
     }
 }

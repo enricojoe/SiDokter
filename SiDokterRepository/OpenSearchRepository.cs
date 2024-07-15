@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Nest;
 using OpenSearch.Client;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,20 @@ namespace Repositories
         public async Task IndexDocumentAsync(Dokter data)
         {
             await _openSearchClient.IndexDocumentAsync(data);
+        }
+
+        public async Task UpdateDocumentAsync(int id, Dokter data)
+        {
+            var res = await _openSearchClient.UpdateAsync<Dokter>(id, u => u
+                            .Doc(data)
+                            .Index("dokter"));
+            return;
+        }
+
+        public async Task DeleteDocumentAsync(int id)
+        {
+            await _openSearchClient.DeleteAsync<Dokter>(id, d => d
+            .Index("dokter"));
         }
     }
 }

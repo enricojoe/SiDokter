@@ -37,25 +37,31 @@
         </form>
         <h4>Jadwal Kerja</h4>
         <hr />
-        <dl class="row">
-            <!-- Headers for the doctor list -->
-            <dt class="col-sm-6 font-weight-bold">
-                Poli
-            </dt>
-            <dd class="col-sm-6 font-weight-bold">
-                Lokasi Dokter
-            </dd>
-
-            @foreach (var bekerja_var in Model.BertugasPoli)
-            {
-                <dt class="col-sm-6">
-                    @Html.DisplayFor(_ => bekerja_var.nama_poli)
-                </dt>
-                <dd class="col-sm-6">
-                    @Html.DisplayFor(_ => bekerja_var.hari)
-                </dd>
-            }
-        </dl>
+        <table class="table w-100">
+            <thead>
+                <tr class="col-sm-2 font-weight-bold">
+                    <th>
+                        Poli
+                    </th>
+                    <th>
+                        Hari
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bekerja_var in Model.BertugasPoli)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(_ => bekerja_var.nama_poli)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(_ => bekerja_var.hari)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
 

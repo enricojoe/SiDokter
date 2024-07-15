@@ -107,6 +107,7 @@ namespace SiDokter.Controllers
             if (ModelState.IsValid)
             {
                 var hasil = await _siDokterService.updateDokterAsync(dokter);
+                await _openSearchService.UpdateDocumentAsync(id, dokter);
                 return RedirectToAction(nameof(Index));
             }
             return View(dokter);
@@ -138,8 +139,8 @@ namespace SiDokter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var result = await _siDokterService.removeDokterAsync(id);
-
+            await _siDokterService.removeDokterAsync(id);
+            await _openSearchService.DeleteDocumentAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

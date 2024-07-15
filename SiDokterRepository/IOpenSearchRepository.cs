@@ -12,5 +12,7 @@ namespace Repositories
         public Task IndexDataAsync(IEnumerable<Dokter> data);
         public Task<IEnumerable<Dokter>> SearchAsync(string query);
         public Task IndexDocumentAsync(Dokter data);
+        public Task UpdateDocumentAsync(int id, Dokter data);
+        public Task DeleteDocumentAsync(int id);
     }
 }

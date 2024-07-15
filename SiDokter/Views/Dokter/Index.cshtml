@@ -57,7 +57,7 @@
                     @Html.DisplayFor(modelItem => item.nama)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.tanggal_lahir)
+                    @item.tanggal_lahir.ToString("dd-MM-yyyy")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.tempat_lahir)
