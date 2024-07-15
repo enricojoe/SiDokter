@@ -1,0 +1,70 @@
+﻿@model Entities.BertugasCreateView
+@{
+    ViewData["Title"] = "Create";
+    var bekerja = ViewBag.bekerja;
+}
+
+<h1>Tambah Poli</h1>
+
+<h4>Poli</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Bertugas.id_dokter" value="@ViewBag.dokter.id" />
+            <div class="form-group">
+                <label class="control-label"></label>
+                <input value="@ViewBag.dokter.nama" class="form-control" readonly/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bertugas.id_poli" class="control-label"></label>
+                <select asp-for="Bertugas.id_poli" asp-items="ViewBag.poli" class="form-control">
+                    <option value="">Pilih Poli</option>
+                </select>
+                <span asp-validation-for="Bertugas.id_poli" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Bertugas.hari" class="control-label"></label>
+                <select asp-for="Bertugas.hari" asp-items="ViewBag.hari" class="form-control">
+                    <option value="">Pilih Hari</option>
+                </select>
+                <span asp-validation-for="Bertugas.hari" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+        <h4>Jadwal Kerja</h4>
+        <hr />
+        <dl class="row">
+            <!-- Headers for the doctor list -->
+            <dt class="col-sm-6 font-weight-bold">
+                Poli
+            </dt>
+            <dd class="col-sm-6 font-weight-bold">
+                Lokasi Dokter
+            </dd>
+
+            @foreach (var bekerja_var in Model.BertugasPoli)
+            {
+                <dt class="col-sm-6">
+                    @Html.DisplayFor(_ => bekerja_var.nama_poli)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(_ => bekerja_var.hari)
+                </dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

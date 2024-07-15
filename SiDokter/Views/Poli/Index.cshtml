@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Entities.Poli>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Daftar Poli</h1>
+
+<p>
+    <a asp-action="Create">
+        <button type="button" class="btn btn-primary">Tambah Poli</button>
+    </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.nama)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lokasi)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nama)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.lokasi)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-success">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@item.id" class="btn btn-primary">Detail</a> 
+                    @* <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Hapus</a> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,64 @@
+﻿@model Entities.Dokter
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Tambah Dokter</h1>
+
+<h4>Dokter</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NIK" class="control-label"></label>
+                <input asp-for="NIK" class="form-control" />
+                <span asp-validation-for="NIK" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nama" class="control-label"></label>
+                <input asp-for="nama" class="form-control" />
+                <span asp-validation-for="nama" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="tanggal_lahir" class="control-label"></label>
+                <input asp-for="tanggal_lahir" class="form-control" type="date" />
+                <span asp-validation-for="tanggal_lahir" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="tempat_lahir" class="control-label"></label>
+                <input asp-for="tempat_lahir" class="form-control" />
+                <span asp-validation-for="tempat_lahir" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="jenis_kelamin" class="control-label"></label>
+                <select asp-for="jenis_kelamin" asp-items="ViewBag.jenis_kelamin" class="form-control">
+                    <option value="">Jenis Kelamin</option>
+                </select>
+                <span asp-validation-for="jenis_kelamin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SpesialisasiId" class="control-label"></label>
+                <select asp-for="SpesialisasiId" asp-items="ViewBag.spesialisasi" class="form-control">
+                    <option value="">Spesialisasi</option>
+                </select>
+                <span asp-validation-for="SpesialisasiId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

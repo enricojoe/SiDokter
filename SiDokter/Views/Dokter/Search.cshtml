@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Entities.Dokter>
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h1>Hasil Pencarian</h1>
+
+<div class="d-flex justify-content-between">
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Tambah Dokter</a>
+    </p>
+    <form asp-action="Search" method="get" class="d-flex align-items-center">
+        <input name="q" class="rounded-2 h-75" placeholder="Cari" />
+        <input type="submit" class="btn btn-secondary h-75 m-1" />
+    </form>
+</div>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NIK)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NIP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nama)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.tanggal_lahir)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.tempat_lahir)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.jenis_kelamin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Spesialisasi)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NIK)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NIP)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nama)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tanggal_lahir)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.tempat_lahir)
+                </td>
+                <td>
+                    @(item.jenis_kelamin == 1 ? "Laki - Laki" : "Perempuan")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Spesialisasi)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-primary">Edit</a> |
+                    <a asp-action="Detail" asp-route-id="@item.id" class="btn btn-info">Detail</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id" class="btn btn-danger">Hapus</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

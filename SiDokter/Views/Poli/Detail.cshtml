@@ -1,0 +1,78 @@
+﻿@model Entities.PoliView
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detail Poli</h1>
+
+<div>
+    <h4>Poli</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.poli.nama)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.poli.nama)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.poli.lokasi)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.poli.lokasi)
+        </dd>
+    </dl>
+    <br />
+    <h4>Dokter yang Bekerja</h4>
+    <hr />
+    <table class="table w-50">
+        <thead>
+            <tr class="col-sm-2 font-weight-bold">
+                <th>
+                    Nama Dokter
+                </th>
+                <th>
+                    Lokasi
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dokter in Model.Dokters)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(_ => dokter.nama)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(_ => dokter.Spesialisasi)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* <dl class="row">
+        <!-- Headers for the doctor list -->
+        <dt >
+            Nama Dokter
+        </dt>
+        <dd class="col-sm-10 font-weight-bold">
+            Lokasi Dokter
+        </dd>
+
+        @foreach (var dokter in Model.Dokters)
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayFor(_ => dokter.nama)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(_ => dokter.SpesialisasiId)
+            </dd>
+        }
+    </dl> *@
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.poli.id" class="btn btn-success">Edit</a> |
+    <a asp-action="Delete" class="btn btn-danger">Hapus</a>
+</div>

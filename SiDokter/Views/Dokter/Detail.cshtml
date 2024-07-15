@@ -1,0 +1,64 @@
+﻿@model Entities.Dokter
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Detail Dokter</h1>
+
+<div>
+    <h4>Dokter</h4>
+    <form id="dataForm" asp-action="Create" asp-controller="Bertugas" method="get">
+        <input type="hidden" asp-for="id" />
+        <button type="submit" class="btn btn-primary">Tambah Tugas</button>
+    </form>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NIK)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NIK)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NIP)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NIP)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.nama)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.nama)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.tanggal_lahir)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.tanggal_lahir)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.tempat_lahir)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.tempat_lahir)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.jenis_kelamin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.jenis_kelamin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SpesialisasiId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SpesialisasiId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id" class="btn btn-success">Edit</a> |
+    <a asp-action="Delete" class="btn btn-danger">Hapus</a>
+</div>
