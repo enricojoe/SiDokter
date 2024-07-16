@@ -17,11 +17,11 @@ namespace SiDokter.Controllers
             _siDokterService = siDokterService;
             _openSearchService = openSearchService;
         }
-        public async Task<IActionResult> Index([FromQuery] string q)
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            if (q != null)
+            if (query != null)
             {
-                var results = await _openSearchService.SearchAsync(q);
+                var results = await _openSearchService.SearchAsync(query);
                 return View(results);
             }
             List<Dokter> dokter = await _siDokterService.getAllDokterAsync();
@@ -67,14 +67,9 @@ namespace SiDokter.Controllers
             }
         }
         
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var dokter = await _siDokterService.getDokterAsync((int)id);
+            var dokter = await _siDokterService.getDokterAsync(id);
             
             if (dokter == null)
             {

@@ -1,6 +1,7 @@
 //Buat elastic search in the app using NoSQL
-
+//(localdb)\MSSQLLocalDB
 using Entities;
+using Microsoft.AspNetCore.DataProtection;
 using OpenSearch.Client;
 using OpenSearch.Net;
 using Repositories;
@@ -16,11 +17,25 @@ namespace SiDokter
 
             var builder = WebApplication.CreateBuilder(args);
 
-            var url = builder.Configuration["Opensearch:Url"];
-            var index = builder.Configuration["Opensearch:Index"];
+            var openSearchHosts = Environment.GetEnvironmentVariable("OPENSEARCH_HOSTS")?
+                .Split(',')
+                .Select(uri => new Uri(uri))
+                .ToArray();
 
-            var node = new Uri(url);
-            var config = new ConnectionSettings(node)
+            // If the environment variable is not set, fallback to the configuration file
+            if (openSearchHosts == null || openSearchHosts.Length == 0)
+            {
+                var url = builder.Configuration["Opensearch:Url"];
+                openSearchHosts = new[] { new Uri(url) };
+            }
+
+            var index = builder.Configuration["Opensearch:Index"];
+            var connectionPool = new StaticConnectionPool(openSearchHosts);
+            //var url = builder.Configuration["Opensearch:Url"];
+            //var index = builder.Configuration["Opensearch:Index"];
+
+            //var node = new Uri(url);
+            var config = new ConnectionSettings(connectionPool)
                 .BasicAuthentication("admin", "ThisQwerty@21")
                 .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
                 .DefaultIndex(index);
@@ -48,6 +63,9 @@ namespace SiDokter
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ISiDokterService, SiDokterService>();
             builder.Services.AddTransient<SiDokterRepository>();
+            builder.Services.AddDataProtection()
+                    .PersistKeysToFileSystem(new DirectoryInfo(@"/var/data-protection-keys/"))
+                    .SetApplicationName("SiDokter");
 
             var app = builder.Build();
 

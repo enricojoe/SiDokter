@@ -38,11 +38,9 @@ namespace Repositories
         }
         public async Task<Dokter> getDokterAsync(int id)
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var result = await dbConnection.QueryFirstOrDefaultAsync<Dokter>("SELECT * FROM [dokter] WHERE id = @id", new { id });
-                return result;
-            }
+            using IDbConnection dbConnection = Connection;
+            var result = await dbConnection.QueryFirstOrDefaultAsync<Dokter>("SELECT * FROM [dokter] WHERE id = @id", new { id });
+            return result;
         }
         public async Task<string> addDokterAsync(Dokter dokter)
         {
@@ -61,78 +59,66 @@ namespace Repositories
         }
         public async Task<string> updateDokterAsync(Dokter dokter)
         {
-            using (IDbConnection dbConnection = Connection)
+            using IDbConnection dbConnection = Connection;
+            var query = "UPDATE [dokter] SET nama = @nama, tanggal_lahir = @tanggal_lahir , tempat_lahir = @tempat_lahir, jenis_kelamin = @jenis_kelamin, SpesialisasiId = @SpesialisasiId WHERE id = @id";
+            var result = await dbConnection.ExecuteAsync(query, dokter);
+            if (result > 0)
             {
-                var query = "UPDATE [dokter] SET nama = @nama, tanggal_lahir = @tanggal_lahir , tempat_lahir = @tempat_lahir, jenis_kelamin = @jenis_kelamin, SpesialisasiId = @SpesialisasiId WHERE id = @id";
-                var result = await dbConnection.ExecuteAsync(query, dokter);
-                if (result > 0)
-                {
-                    return "Data dokter berhasil diupdate.";
-                }
-                else
-                {
-                    return "Gagal mengupdate data dokter.";
-                }
+                return "Data dokter berhasil diupdate.";
+            }
+            else
+            {
+                return "Gagal mengupdate data dokter.";
             }
         }
         public async Task<string> removeDokterAsync(int id)
         {
-            using (IDbConnection dbConnection = Connection)
+            using IDbConnection dbConnection = Connection;
+            var query = "DELETE FROM [dokter] WHERE id = @id";
+            var result = await dbConnection.ExecuteAsync(query, new { id });
+            if (result > 0)
             {
-                var query = "DELETE FROM [dokter] WHERE id = @id";
-                var result = await dbConnection.ExecuteAsync(query, new { id });
-                if (result > 0)
-                {
-                    return "Dokter berhasil dihapus.";
-                }
-                else
-                {
-                    return "Gagal menghapus data dokter.";
-                }
+                return "Dokter berhasil dihapus.";
+            }
+            else
+            {
+                return "Gagal menghapus data dokter.";
             }
         }
 
         public async Task<List<Spesialisasi>> getSpesialisasiAsync()
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var result = await dbConnection.QueryAsync<Spesialisasi>("SELECT * FROM [spesialisasi]");
-                return result.ToList();
-            }
+            using IDbConnection dbConnection = Connection;
+            var result = await dbConnection.QueryAsync<Spesialisasi>("SELECT * FROM [spesialisasi]");
+            return result.ToList();
         }
 
         public async Task<List<Poli>> getAllPoliAsync()
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var result = await dbConnection.QueryAsync<Poli>("SELECT * FROM [poli]");
-                return result.ToList();
-            }
+            using IDbConnection dbConnection = Connection;
+            var result = await dbConnection.QueryAsync<Poli>("SELECT * FROM [poli]");
+            return result.ToList();
         }
 
         public async Task<Poli> getPoliAsync(int id)
         {
-            using (IDbConnection dbConnection = Connection)
-            {
-                var result = await dbConnection.QueryFirstOrDefaultAsync<Poli>("SELECT * FROM [poli] WHERE id = @id", new { id });
-                return result;
-            }
+            using IDbConnection dbConnection = Connection;
+            var result = await dbConnection.QueryFirstOrDefaultAsync<Poli>("SELECT * FROM [poli] WHERE id = @id", new { id });
+            return result;
         }
 
         public async Task<string> updatePoliAsync(Poli poli)
         {
-            using (IDbConnection dbConnection = Connection)
+            using IDbConnection dbConnection = Connection;
+            var query = "UPDATE [poli] SET nama = @nama, lokasi = @lokasi WHERE id = @id";
+            var result = await dbConnection.ExecuteAsync(query, poli);
+            if (result > 0)
             {
-                var query = "UPDATE [poli] SET nama = @nama, lokasi = @lokasi WHERE id = @id";
-                var result = await dbConnection.ExecuteAsync(query, poli);
-                if (result > 0)
-                {
-                    return "Data poli berhasil diupdate.";
-                }
-                else
-                {
-                    return "Gagal mengupdate data poli.";
-                }
+                return "Data poli berhasil diupdate.";
+            }
+            else
+            {
+                return "Gagal mengupdate data poli.";
             }
         }
 
@@ -146,9 +132,9 @@ namespace Repositories
                     INNER JOIN [spesialisasi] s ON d.SpesialisasiId = s.id
                     WHERE b.id_poli = @IdPoli";
 
-            var dokters = dbConnection.Query<Dokter>(sql, new { IdPoli = idPoli }).ToList();
+            var dokters = await dbConnection.QueryAsync<Dokter>(sql, new { IdPoli = idPoli });
 
-            return dokters;
+            return dokters.ToList();
         }
 
         public async Task<List<BertugasPoli>> getBertugasOnPoliAsync(int id_dokter)
@@ -160,42 +146,38 @@ namespace Repositories
                     INNER JOIN [poli] p ON b.id_poli = p.id
                     WHERE b.id_dokter = @IdDokter";
 
-            var bertugas = dbConnection.Query<BertugasPoli>(sql, new { IdDokter =  id_dokter }).ToList();
+            var bertugas = await dbConnection.QueryAsync<BertugasPoli>(sql, new { IdDokter =  id_dokter });
 
-            return bertugas;
+            return bertugas.ToList();
         }
 
         public async Task<string> addPoliAsync(Poli poli)
         {
-            using (IDbConnection dbConnection = Connection)
+            using IDbConnection dbConnection = Connection;
+            var query = "INSERT INTO [poli] (nama, lokasi) VALUES(@nama, @lokasi)";
+            var result = await dbConnection.ExecuteAsync(query, poli);
+            if (result > 0)
             {
-                var query = "INSERT INTO [poli] (nama, lokasi) VALUES(@nama, @lokasi)";
-                var result = await dbConnection.ExecuteAsync(query, poli);
-                if (result > 0)
-                {
-                    return "Poli berhasil ditambahkan.";
-                }
-                else
-                {
-                    return "Gagal menambahkan data poli.";
-                }
+                return "Poli berhasil ditambahkan.";
+            }
+            else
+            {
+                return "Gagal menambahkan data poli.";
             }
         }
 
         public async Task<string> addBertugasAsync(Bertugas bertugas)
         {
-            using (IDbConnection dbConnection = Connection)
+            using IDbConnection dbConnection = Connection;
+            var query = "INSERT INTO [bertugas] (id_dokter, id_poli, hari) VALUES(@id_dokter, @id_poli, @hari)";
+            var result = await dbConnection.ExecuteAsync(query, bertugas);
+            if (result > 0)
             {
-                var query = "INSERT INTO [bertugas] (id_dokter, id_poli, hari) VALUES(@id_dokter, @id_poli, @hari)";
-                var result = await dbConnection.ExecuteAsync(query, bertugas);
-                if (result > 0)
-                {
-                    return "Tugas berhasil ditambahkan.";
-                }
-                else
-                {
-                    return "Gagal menambahkan data bertugas.";
-                }
+                return "Tugas berhasil ditambahkan.";
+            }
+            else
+            {
+                return "Gagal menambahkan data bertugas.";
             }
         }
     }
