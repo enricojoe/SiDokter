@@ -1,12 +1,17 @@
 //Buat elastic search in the app using NoSQL
 //(localdb)\MSSQLLocalDB
 using Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.IdentityModel.Tokens;
 using OpenSearch.Client;
 using OpenSearch.Net;
 using Repositories;
 using Services;
+using SiDokter.CustomAttribute;
 using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace SiDokter
 {
@@ -16,6 +21,26 @@ namespace SiDokter
         {
 
             var builder = WebApplication.CreateBuilder(args);
+            var key = Encoding.ASCII.GetBytes(builder.Configuration["AppSettings:Secret"]);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true, // Validate who created the token (issuer)
+                            ValidateAudience = true, // Validate who receives the token (audience)
+                            ValidateLifetime = true, // Validate token expiration
+                            ValidateIssuerSigningKey = true, // Validate the token signature using a secret key
+                            IssuerSigningKey = new SymmetricSecurityKey(key), // Replace with your secret key retrieval logic
+                            ValidIssuer = "AuthApp", // Replace with your issuer string
+                            ValidAudience = "SiDokterApp"  // Replace with your audience string
+                        };
+                    });
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Auth/Login";
+            });
 
             var openSearchHosts = Environment.GetEnvironmentVariable("OPENSEARCH_HOSTS")?
                 .Split(',')
@@ -60,12 +85,25 @@ namespace SiDokter
 
             // Add services to the container.
             builder.Services.AddMemoryCache();
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new CookiesAuthAttribute());
+            });
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ISiDokterService, SiDokterService>();
             builder.Services.AddTransient<SiDokterRepository>();
             builder.Services.AddDataProtection()
                     .PersistKeysToFileSystem(new DirectoryInfo(@"/var/data-protection-keys/"))
                     .SetApplicationName("SiDokter");
+
+            // builder.WebHost.ConfigureKestrel(serverOptions =>
+            // {
+            //     serverOptions.ConfigureHttpsDefaults(listenOptions =>
+            //     {
+            //         listenOptions.ServerCertificate = new X509Certificate2("/etc/ssl/certs/certificate.crt", "/etc/ssl/private/private.key");
+            //     });
+            // });
 
             var app = builder.Build();
 
@@ -76,6 +114,7 @@ namespace SiDokter
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -103,6 +142,14 @@ namespace SiDokter
     }
 }
 
+//,
+//  "Kestrel": {
+//    "Endpoints": {
+//        "Http": {
+//            "Url": "http://*:8000"
+//        }
+//    }
+//}
 
 //var settings = new ConnectionSettings(new Uri(url))
 //                .CertificateFingerprint("f9c4e70e3120c981b94c24237fd20195984c18e92b7a06a43c9353919dc2f93c")

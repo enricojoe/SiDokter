@@ -8,17 +8,32 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+      - "8001:8001"
     depends_on:
       - sqlserver
       - opensearch-node1
       - opensearch-node2
+      - sidokterauthapp
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=dokterku;User Id=sa;Password=ThisQwerty21;TrustServerCertificate=True;
       - OPENSEARCH_HOSTS=https://opensearch-node1:9200,https://opensearch-node2:9200
+      - ASPNETCORE_HTTPS_PORT=8001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Qwerty@21
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=./certificate.pfx
     volumes:
       - ./data-protection-keys:/var/data-protection-keys
+      - ./certificate.pfx:/app/certificate.pfx
     networks:
       - opensearch-net
+      - default
+
+  sidokterauthapp:
+    image: sidokterauthapp
+    ports:
+      - "8010:8010"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=user;User Id=sa;Password=ThisQwerty21;TrustServerCertificate=True;
+    networks:
       - default
 
   sqlserver:

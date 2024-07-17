@@ -1,0 +1,26 @@
+﻿@model Entities.User
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>@ViewData["Title"]</h1>
+<h4>Silahkan masukkan akun anda.</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="VerifyUser">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username">Username</label>
+                <input asp-for="Username" class="form-control" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordHash">Password</label>
+                <input asp-for="PasswordHash" class="form-control" />
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" value="VerifyUser">Masuk</button>
+        </form>
+    </div>
+</div>

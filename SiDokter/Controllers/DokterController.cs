@@ -1,8 +1,10 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using SiDokter.CustomAttribute;
 using System.Reflection;
 
 namespace SiDokter.Controllers
