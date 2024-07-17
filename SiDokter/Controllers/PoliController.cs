@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using System.Reflection;
 
 namespace SiDokter.Controllers
 {
+    [Authorize]
     public class PoliController : Controller
     {
         private readonly ISiDokterService _siDokterService;

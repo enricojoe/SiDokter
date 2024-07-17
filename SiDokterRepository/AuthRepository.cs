@@ -39,13 +39,10 @@ namespace Repositories
             using var httpClient = new HttpClient();
             var json = JsonConvert.SerializeObject(user);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            Console.WriteLine("**************");
-            Console.WriteLine(content);
-            Console.WriteLine("**************");
-            using var response = await httpClient.PostAsync($"http://sidokterdocker-sidokterauthapp-1:8010/auth/User/Login", content);
-            Console.WriteLine("==============");
-            Console.WriteLine(response);
-            Console.WriteLine("==============");
+            string url = _configuration["AuthBase"];
+            
+            using var response = await httpClient.PostAsync($"{url}/Login", content);
+            
             if (response.IsSuccessStatusCode)
             {
                 var token = await response.Content.ReadAsStringAsync();
@@ -63,8 +60,9 @@ namespace Repositories
                 using var httpClient = new HttpClient();
                 var json = JsonConvert.SerializeObject(user);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
+                string url = _configuration["AuthBase"];
 
-                using var response = await httpClient.PostAsync($"http://sidokterdocker-sidokterauthapp-1:8010/auth/User/Register", content);
+                using var response = await httpClient.PostAsync($"{url}/Register", content);
                 if (response.IsSuccessStatusCode)
                 {
                     var res = await response.Content.ReadAsStringAsync();

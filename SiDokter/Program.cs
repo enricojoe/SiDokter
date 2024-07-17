@@ -3,13 +3,16 @@
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OpenSearch.Client;
 using OpenSearch.Net;
 using Repositories;
 using Services;
 using SiDokter.CustomAttribute;
 using System;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -36,11 +39,40 @@ namespace SiDokter
                             ValidIssuer = "AuthApp", // Replace with your issuer string
                             ValidAudience = "SiDokterApp"  // Replace with your audience string
                         };
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                context.Request.Cookies.TryGetValue("token", out var token);
+                                if (!string.IsNullOrEmpty(token))
+                                {
+                                    context.Token = token;
+                                }
+                                return Task.CompletedTask;
+                            },
+                            OnTokenValidated = context =>
+                            {
+                                var claimsPrincipal = context.Principal as ClaimsPrincipal;
+                                context.HttpContext.User = claimsPrincipal;
+                                return Task.CompletedTask;
+                            },
+                            OnAuthenticationFailed = context =>
+                            {
+                                context.Response.Redirect("/auth/Login");
+                                context.Response.StatusCode = 302; // 302 is the status code for redirection
+                                return Task.CompletedTask;
+                            },
+                            OnChallenge = context =>
+                            {
+                                // Handle the event when the token is not available
+                                context.Response.Redirect("/auth/Login");
+                                context.Response.StatusCode = 302; // 302 is the status code for redirection
+                                context.HandleResponse(); // This is important to stop further processing
+                                
+                                return Task.CompletedTask;
+                            }
+                        };
                     });
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Auth/Login";
-            });
 
             var openSearchHosts = Environment.GetEnvironmentVariable("OPENSEARCH_HOSTS")?
                 .Split(',')
@@ -56,10 +88,7 @@ namespace SiDokter
 
             var index = builder.Configuration["Opensearch:Index"];
             var connectionPool = new StaticConnectionPool(openSearchHosts);
-            //var url = builder.Configuration["Opensearch:Url"];
-            //var index = builder.Configuration["Opensearch:Index"];
-
-            //var node = new Uri(url);
+            
             var config = new ConnectionSettings(connectionPool)
                 .BasicAuthentication("admin", "ThisQwerty@21")
                 .ServerCertificateValidationCallback(CertificateValidations.AllowAll)
@@ -71,24 +100,9 @@ namespace SiDokter
             builder.Services.AddScoped<IOpenSearchRepository, OpenSearchRepository>();
             builder.Services.AddScoped<IOpenSearchService, OpenSearchService>();
 
-
-            //var settings = new ConnectionSettings(new Uri(url))
-            //    .CertificateFingerprint("f9c4e70e3120c981b94c24237fd20195984c18e92b7a06a43c9353919dc2f93c")
-            //    .BasicAuthentication("elastic", "lZY8Ol7cf*x3Oa8k-5VT")
-            //    .DefaultIndex(index);
-            //settings.EnableApiVersioningHeader();
-
-            //var client = new ElasticClient(settings);
-            //builder.Services.AddSingleton<IElasticClient>(client);
-            //client.Indices.Create(index, index => index.Map<Dokter>(x => x.AutoMap()));
-            //builder.Services.AddSingleton<IElasticsearchService, ElasticsearchService>();
-
             // Add services to the container.
             builder.Services.AddMemoryCache();
-            builder.Services.AddControllersWithViews(options =>
-            {
-                options.Filters.Add(new CookiesAuthAttribute());
-            });
+            builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ISiDokterService, SiDokterService>();

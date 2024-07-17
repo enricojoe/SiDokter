@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SiDokter.Controllers
 {
-    [AllowAnonymous]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -44,24 +43,15 @@ namespace SiDokter.Controllers
         }
 
         // GET: AuthController/Create
-        public ActionResult Create()
+        public IActionResult LogOut()
         {
-            return View();
-        }
+            // Name of the cookie to remove
+            string cookieName = "token";
 
-        // POST: AuthController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            // Remove the cookie
+            Response.Cookies.Delete(cookieName);
+
+            return RedirectToAction("Login");
         }
         private string SetCookie(string token)
         {

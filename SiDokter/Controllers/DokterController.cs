@@ -9,6 +9,7 @@ using System.Reflection;
 
 namespace SiDokter.Controllers
 {
+    [Authorize]
     public class DokterController : Controller
     {
         private readonly ISiDokterService _siDokterService;
