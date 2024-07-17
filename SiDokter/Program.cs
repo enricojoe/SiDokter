@@ -10,7 +10,6 @@ using OpenSearch.Client;
 using OpenSearch.Net;
 using Repositories;
 using Services;
-using SiDokter.CustomAttribute;
 using System;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
